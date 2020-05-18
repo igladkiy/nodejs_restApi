@@ -5,13 +5,12 @@ const { responseMiddleware } = require('../middlewares/response.middleware');
 
 const router = Router();
 
-router.post('/', createUserValid, (req, res, next) => {
-    try {
-        
+router.post('/', createUserValid, (req, res, next) => {   
+    try {       
         const data = UserService.createNewUser(req.body)
-        res.data = data;
-        
-    } catch (err) {
+        res.data = data;        
+    }    
+    catch (err) {       
         res.err = err;
     } finally {
         next();
@@ -21,7 +20,6 @@ router.post('/', createUserValid, (req, res, next) => {
 router.get('/', (req, res, next) => {
     try {
         const data = UserService.searchAll()
-
         res.data = data;
     } catch (err) {
         res.err = err;
@@ -33,6 +31,7 @@ router.get('/', (req, res, next) => {
 router.get('/:id', (req, res, next) => {
     try {
         const id = req.params.id
+
         const data = UserService.searchOne(id)
         res.data = data;
     } catch (err) {
@@ -42,7 +41,7 @@ router.get('/:id', (req, res, next) => {
     }
 }, responseMiddleware);
 
-router.put('/:id', (req, res, next) => {
+router.put('/:id', updateUserValid, (req, res, next) => {
     try {
         const id = req.params.id
         const data = UserService.updateUserData(id, req.body)

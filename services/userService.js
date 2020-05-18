@@ -1,41 +1,49 @@
 const { UserRepository } = require('../repositories/userRepository');
+const validationError = require('../errors/validationError');
+const notFoundError = require('../errors/notFoundError');
 
 class UserService {
 
     createNewUser(data) {
-        const newUser = UserRepository.create(data)
-        if(!newUser) {
-            return null;
+        const isNotUniqEmail = UserRepository.getOne({ email: data.email });
+        const isNotUniqPhoneNumber = UserRepository.getOne({ phoneNumber: data.phoneNumber });
+
+        if (isNotUniqPhoneNumber) {
+            throw new validationError('Phone number already exists');
         }
-        return newUser;
+        if (isNotUniqEmail) {
+            throw new validationError('Email already exists');
+        }
+        return UserRepository.create(data)
     }
 
-    updateUserData(id, dataToUpdate){     
-           const updateUser = UserRepository.update(id, dataToUpdate)
-        if(!updateUser) {
-            return null;
+    updateUserData(id, dataToUpdate) {
+        const isEmailExist = UserRepository.getOne({ id });
+        if (isEmailExist) {
+            return UserRepository.update({id}, dataToUpdate)
+        } else {
+            throw new notFoundError('User does not exist')
         }
-        return updateUser;
     }
 
     searchOne(id) {
-        const item = UserRepository.getOne({id});
-        if(!item) {
+        const item = UserRepository.getOne({ id });
+        if (!item) {
             return null;
         }
         return item;
     }
     searchAll() {
         const items = UserRepository.getAll();
-        if(!items) {
+        if (!items) {
             return null;
         }
         return items;
     }
     delete(id) {
         const item = UserRepository.delete(id);
-        if(!item) {
-            return null;
+        if (!item) {
+            throw Error('The user was not delete')
         }
         return item;
     }

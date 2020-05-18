@@ -1,4 +1,5 @@
 const { FighterRepository } = require('../repositories/fighterRepository');
+const validationError = require('../errors/validationError');
 
 class FighterService {
 
@@ -17,11 +18,12 @@ class FighterService {
         return item;
     }
     createFighter(data) {
-        const fighter = FighterRepository.create(data);
-        if (!fighter) {
-            return null;
+        const checkFighterName = FighterRepository.getOne({name: data.name});
+        if(checkFighterName){
+            throw new validationError('Fighter name already exists');
         }
-        return fighter;
+        return FighterRepository.create(data);
+
     }
     deleteFighter(id) {
         const fighter = FighterRepository.delete(id);
@@ -30,12 +32,12 @@ class FighterService {
         }
         return fighter;
     }
-    updateFighter(id, dataToupdate) {
-        const fighter = FighterRepository.update(id, dataToupdate);
-        if (!fighter) {
-            return null;
+    updateFighter(id, dataToUpdate) {
+        const checkFighterName = FighterRepository.getOne({id});
+        if(checkFighterName){
+            throw Error('Fighter already exist')
         }
-        return fighter;
+        return FighterRepository.update({id}, dataToUpdate);
     }
 }
 

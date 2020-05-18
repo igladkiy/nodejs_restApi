@@ -30,7 +30,7 @@ router.get('/:id', (req, res, next) => {
     }
 }, responseMiddleware);
 
-router.post('/', (req, res, next) => {
+router.post('/', createFighterValid, (req, res, next) => {
     try {
         const data = FighterService.createFighter(req.body);
 
@@ -42,7 +42,7 @@ router.post('/', (req, res, next) => {
     }
 }, responseMiddleware);
 
-router.put('/:id', (req, res, next) => {
+router.put('/:id', updateFighterValid, (req, res, next) => {
     try {
         const id = req.params.id
         const data = FighterService.updateFighter(id, req.body);
